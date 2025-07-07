@@ -1,0 +1,33 @@
+﻿# Add these lines to your .gitignore
+
+# Backend configuration (contains account-specific info)
+backend-config.hcl
+backend-config.tf
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+*.tfplan
+*.tfvars
+!*.tfvars.example
+!terraform.tfvars
+
+# OS
+.DS_Store
+.idea/
+*.swp
+*.swo
+*~
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# PowerShell
+*.ps1.bak

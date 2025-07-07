@@ -1,0 +1,32 @@
+# If you need to reference secrets in other resources (e.g., ECS tasks):
+# Example usage in an ECS task definition
+resource "aws_ecs_task_definition" "example" {
+  # ... other configuration ...
+  
+  container_definitions = jsonencode([
+    {
+      name  = "my-container"
+      image = "my-image"
+      
+      # Reference secrets from Secrets Manager
+      secrets = [
+        {
+          name      = "API_KEY"
+          valueFrom = "${module.secrets.api_secrets_arn}:api_key::"
+        },
+        {
+          name      = "API_SECRET"
+          valueFrom = "${module.secrets.api_secrets_arn}:api_secret::"
+        },
+        {
+          name      = "DB_USERNAME"
+          valueFrom = "${module.secrets.db_credentials_arn}:username::"
+        },
+        {
+          name      = "DB_PASSWORD"
+          valueFrom = "${module.secrets.db_credentials_arn}:password::"
+        }
+      ]
+    }
+  ])
+}
