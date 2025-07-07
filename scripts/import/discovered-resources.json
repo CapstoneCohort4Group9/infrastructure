@@ -1,0 +1,63 @@
+{
+    "ap-southeast-2":  {
+                           "VPCs":  [
+                                        {
+                                            "VpcId":  "vpc-0c30383d288b9b1ea",
+                                            "Name":  "rds_vpc",
+                                            "CidrBlock":  "172.30.0.0/16"
+                                        }
+                                    ],
+                           "SecurityGroups":  [
+
+                                              ],
+                           "RDSInstances":  [
+                                                {
+                                                    "Status":  "available",
+                                                    "DBInstanceId":  "postgressql-hopjetairline-1",
+                                                    "Class":  "db.t4g.micro",
+                                                    "Engine":  "postgres"
+                                                }
+                                            ],
+                           "EC2Instances":  [
+
+                                            ],
+                           "S3Buckets":  [
+
+                                         ]
+                       },
+    "global":  {
+                   "Policies":  [
+                                    {
+                                        "Arn":  "arn:aws:iam::489582127457:policy/GitHubActionsPolicy",
+                                        "Name":  "GitHubActionsPolicy"
+                                    }
+                                ],
+                   "Roles":  [
+                                 {
+                                     "Name":  "AmazonEC2FullAccess",
+                                     "CreateDate":  "2025-06-26T14:51:52+00:00",
+                                     "Arn":  "arn:aws:iam::489582127457:role/AmazonEC2FullAccess"
+                                 },
+                                 {
+                                     "Name":  "ecsTaskExecutionRole",
+                                     "CreateDate":  "2025-06-17T14:59:12+00:00",
+                                     "Arn":  "arn:aws:iam::489582127457:role/ecsTaskExecutionRole"
+                                 },
+                                 {
+                                     "Name":  "ecsTaskRole",
+                                     "CreateDate":  "2025-06-24T18:19:15+00:00",
+                                     "Arn":  "arn:aws:iam::489582127457:role/ecsTaskRole"
+                                 },
+                                 {
+                                     "Name":  "GitHubActionsRole",
+                                     "CreateDate":  "2025-06-17T11:30:42+00:00",
+                                     "Arn":  "arn:aws:iam::489582127457:role/GitHubActionsRole"
+                                 },
+                                 {
+                                     "Name":  "rds-monitoring-role",
+                                     "CreateDate":  "2025-06-19T02:23:46+00:00",
+                                     "Arn":  "arn:aws:iam::489582127457:role/rds-monitoring-role"
+                                 }
+                             ]
+               }
+}
