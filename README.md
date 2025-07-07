@@ -11,13 +11,19 @@ This repository manages AWS infrastructure using Terraform and GitHub Actions wi
 └── scripts/             # Setup and utility scripts
 ```
 
-
 ## Prerequisites
 
 1. AWS Account with appropriate permissions
 2. GitHub repository with OIDC provider configured
 3. S3 bucket for Terraform state
 4. DynamoDB table for state locking
+
+## profile set and reset
+```powershell
+$env:AWS_PROFILE = "hopjetair"
+#once you finished using please remove it
+Remove-Item Env:AWS_PROFILE
+```
 
 ## Initial Setup
 
@@ -42,6 +48,7 @@ cd scripts
 ### 3. Configure GitHub Secrets
 
 Add these repository variables in GitHub:
+
 - `AWS_ACCOUNT_ID`: Your AWS account ID
 - `AWS_REGION`: Your preferred AWS region (e.g., ap-south-1)
 
