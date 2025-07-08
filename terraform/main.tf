@@ -67,7 +67,7 @@ module "security" {
   project               = var.project_name
 }
 
-# RDS PostgreSQL with pgvector
+# RDS PostgreSQL
 module "rds" {
   source = "./modules/rds"
 
@@ -82,7 +82,6 @@ module "rds" {
   subnet_ids        = module.networking.public_subnet_ids
   security_group_id = module.security.rds_security_group_id
 
-  enable_pgvector     = true
   publicly_accessible = true
 
   environment = var.environment

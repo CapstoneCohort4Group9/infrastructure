@@ -1,5 +1,14 @@
 ﻿# modules/rds/main.tf
 
+data "aws_vpc" "selected" {
+  id = var.vpc_id
+}
+
+# Add a local validation
+locals {
+  validate_dns = var.publicly_accessible && (!data.aws_vpc.selected.enable_dns_support || !data.aws_vpc.selected.enable_dns_hostnames) ? file("ERROR: VPC DNS settings must be enabled for public RDS access") : null
+}
+
 # RDS Subnet Group
 resource "aws_db_subnet_group" "main" {
   name       = "${var.identifier}-subnet-group"
@@ -12,28 +21,11 @@ resource "aws_db_subnet_group" "main" {
   }
 }
 
-# RDS Parameter Group for PostgreSQL with pgvector
-resource "aws_db_parameter_group" "postgres_pgvector" {
-  name   = "${var.identifier}-pgvector-params"
-  family = "postgres17"
-
-  parameter {
-    name  = "shared_preload_libraries"
-    value = "pg_stat_statements,pgvector"
-  }
-
-  tags = {
-    Name        = "${var.identifier}-pgvector-params"
-    Environment = var.environment
-    Project     = var.project
-  }
-}
-
 # RDS PostgreSQL Instance
 resource "aws_db_instance" "main" {
   identifier     = var.identifier
   engine         = "postgres"
-  engine_version = "17.4" # Supports pgvector
+  engine_version = "17.4"
 
   instance_class    = var.instance_class
   allocated_storage = var.allocated_storage
@@ -47,48 +39,28 @@ resource "aws_db_instance" "main" {
 
   vpc_security_group_ids = [var.security_group_id]
   db_subnet_group_name   = aws_db_subnet_group.main.name
-  parameter_group_name   = aws_db_parameter_group.postgres_pgvector.name
+  # parameter_group_name is omitted to use default.postgres17
+  # Alternatively, explicitly set: parameter_group_name = "default.postgres17"
 
   publicly_accessible = var.publicly_accessible
 
-  # Backup and maintenance
   backup_retention_period = var.backup_retention_period
   backup_window           = var.backup_window
   maintenance_window      = var.maintenance_window
 
-  # Free tier settings
-  skip_final_snapshot = true  # For development; change for production
-  deletion_protection = false # For development; enable for production
+  skip_final_snapshot = true
+  deletion_protection = false
 
-  # Enable automated backups
   enabled_cloudwatch_logs_exports = ["postgresql"]
 
-  # Performance insights (free tier includes 7 days)
   performance_insights_enabled          = true
   performance_insights_retention_period = 7
+
+  apply_immediately = false # Use maintenance window for changes
 
   tags = {
     Name        = var.identifier
     Environment = var.environment
     Project     = var.project
-  }
-}
-
-# Create database and enable pgvector extension
-resource "null_resource" "db_setup" {
-  count = var.enable_pgvector ? 1 : 0
-
-  depends_on = [aws_db_instance.main]
-
-  provisioner "local-exec" {
-    command = <<-EOT
-      echo "Waiting for RDS instance to be available..."
-      sleep 60
-      
-      # Note: In production, use a proper method to enable pgvector
-      # This is a placeholder - you'll need to connect to the database
-      # and run: CREATE EXTENSION IF NOT EXISTS vector;
-      echo "Please manually connect to the database and run: CREATE EXTENSION IF NOT EXISTS vector;"
-    EOT
   }
 }

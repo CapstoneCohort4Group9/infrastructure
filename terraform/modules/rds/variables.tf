@@ -69,12 +69,6 @@ variable "maintenance_window" {
   default     = "sun:04:00-sun:05:00"
 }
 
-variable "enable_pgvector" {
-  description = "Enable pgvector extension"
-  type        = bool
-  default     = true
-}
-
 variable "environment" {
   description = "Environment name"
   type        = string
