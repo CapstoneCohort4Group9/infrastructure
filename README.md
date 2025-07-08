@@ -19,6 +19,7 @@ This repository manages AWS infrastructure using Terraform and GitHub Actions wi
 4. DynamoDB table for state locking
 
 ## profile set and reset
+
 ```powershell
 $env:AWS_PROFILE = "hopjetair"
 #once you finished using please remove it
@@ -26,6 +27,21 @@ Remove-Item Env:AWS_PROFILE
 ```
 
 ## Initial Setup
+
+### 0. Check if you are in the right aws account and region
+
+```
+powershell
+# Test the command directly
+aws sts get-caller-identity
+
+# Should return something like:
+# {
+#     "UserId": "AIDACKCEVSQ6C2EXAMPLE",
+#     "Account": "123456789012",
+#     "Arn": "arn:aws:iam::123456789012:user/username"
+# }
+```
 
 ### 1. Configure AWS OIDC Provider (One-time setup)
 
@@ -50,7 +66,7 @@ cd scripts
 Add these repository variables in GitHub:
 
 - `AWS_ACCOUNT_ID`: Your AWS account ID
-- `AWS_REGION`: Your preferred AWS region (e.g., ap-south-1)
+- `AWS_REGION`: Your preferred AWS region (e.g., us-east-1)
 
 ## Usage
 

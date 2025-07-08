@@ -20,7 +20,7 @@ locals {
         }
       ]
     })
-    
+
     # Extended policy - keeps more images
     extended = jsonencode({
       rules = [
@@ -51,7 +51,7 @@ locals {
         }
       ]
     })
-    
+
     # ML-specific policy
     ml-specific = jsonencode({
       rules = [
@@ -95,7 +95,7 @@ locals {
         }
       ]
     })
-    
+
     # Minimal policy - your exact requirement, nothing else
     minimal = jsonencode({
       rules = [
@@ -118,7 +118,7 @@ locals {
 
 resource "aws_ecr_repository" "this" {
   for_each = { for repo in var.repositories : repo.name => repo }
-  
+
   name                 = each.value.name
   image_tag_mutability = each.value.image_tag_mutability
 
@@ -133,15 +133,16 @@ resource "aws_ecr_repository" "this" {
   tags = {
     Name        = each.value.name
     Environment = var.environment
+    Project     = var.project
   }
 }
 
 # This resource creates the lifecycle policy for each repository
 resource "aws_ecr_lifecycle_policy" "this" {
   for_each = { for repo in var.repositories : repo.name => repo }
-  
+
   repository = aws_ecr_repository.this[each.key].name
-  
+
   # This line selects which policy to use based on the repository's lifecycle_policy setting
   # If not specified, it defaults to "standard" which is your requested policy
   policy = lookup(local.lifecycle_policies, each.value.lifecycle_policy, local.lifecycle_policies.standard)

@@ -6,7 +6,7 @@ param(
     [string]$AccountId = $null,
 
     [Parameter(Mandatory=$false)]
-    [string]$Region = "ap-south-1"
+    [string]$Region = "us-east-1"
 )
 
 # Set AWS region

@@ -1,8 +1,9 @@
 ﻿# Add these lines to your .gitignore
 
-# Backend configuration (contains account-specific info)
+# Terraform backend configuration (contains account-specific info)
 backend-config.hcl
-backend-config.tf
+*.backend.hcl
+.terraform.backend
 
 # Terraform
 *.tfstate

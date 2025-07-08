@@ -4,6 +4,11 @@ variable "environment" {
   type        = string
 }
 
+variable "project" {
+  description = "Project name"
+  type        = string
+}
+
 variable "enable_rotation" {
   description = "Enable automatic secret rotation"
   type        = bool

@@ -26,3 +26,21 @@ bash
     terraform init \
     -backend-config="env/dev.hcl" \
     -backend-config="common.hcl"
+
+
+## How to Use the Updated Script:
+
+```powershell
+# First time initialization
+.\scripts\setup-terraform-init.ps1
+
+# If you're migrating from old state location (ecr/ to infrastructure/)
+.\scripts\setup-terraform-init.ps1 -MigrateState
+
+# If you want to reconfigure (fresh start)
+.\scripts\setup-terraform-init.ps1 -Reconfigure
+
+# If you're switching AWS accounts
+.\scripts\setup-terraform-init.ps1 -AccountId "123456789012" -Reconfigure
+```
+

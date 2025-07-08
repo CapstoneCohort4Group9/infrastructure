@@ -15,7 +15,7 @@ param(
     [string]$DbPassword = "SecurePass123!",
 
     [Parameter(Mandatory=$false)]
-    [string]$Region = "ap-south-1",
+    [string]$Region = "us-east-1",
     
     [Parameter(Mandatory=$false)]
     [switch]$Force  # Force update even if deletion is pending

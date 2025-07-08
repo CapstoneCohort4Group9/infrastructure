@@ -3,8 +3,8 @@
 # API Secrets
 resource "aws_secretsmanager_secret" "api_secrets" {
   name                    = "api_secrets"
-  description            = "Stores API key and secret"
-  recovery_window_in_days = 0  # Can be 0 for immediate deletion
+  description             = "Stores API key and secret"
+  recovery_window_in_days = 0 # Can be 0 for immediate deletion
 
   # Rotation configuration (optional)
   # rotation_rules {
@@ -15,19 +15,21 @@ resource "aws_secretsmanager_secret" "api_secrets" {
     Name        = "api_secrets"
     Environment = var.environment
     ManagedBy   = "terraform"
+    Project     = var.project
   }
 }
 
 # DB Credentials
 resource "aws_secretsmanager_secret" "db_credentials" {
   name                    = "db_credentials"
-  description            = "Holds the database username and password"
+  description             = "Holds the database username and password"
   recovery_window_in_days = 0 # Can be 0 for immediate deletion
 
   tags = {
     Name        = "db_credentials"
     Environment = var.environment
     ManagedBy   = "terraform"
+    Project     = var.project
   }
 }
 

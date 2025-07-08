@@ -1,8 +1,11 @@
-﻿aws_region  = "ap-south-1"
-environment = "production"
+﻿# Updated terraform.tfvars for us-east-1
 
-# Add new repositories here - this file is safe to edit
-# The script will not overwrite your changes
+aws_region   = "us-east-1" # Changed from ap-south-1
+environment  = "production"
+project_name = "hopjetair"
+
+
+# ECR repositories configuration
 ecr_repositories = [
   {
     name             = "non-ai-api"
@@ -34,5 +37,51 @@ ecr_repositories = [
     scan_on_push     = false
     lifecycle_policy = "standard"
   }
-  # Add more repositories above this line
 ]
+
+# RDS Configuration
+rds_instance_class    = "db.t4g.micro" #"db.t3.micro"
+rds_allocated_storage = 20
+rds_database_name     = "hopjetairline_db"
+rds_username          = "hopjetair"
+rds_password          = "SecurePass123!" # IMPORTANT: Change this!
+
+# Service configurations (optional - can use defaults)
+service_configs = {
+  frontend-api = {
+    cpu    = 512
+    memory = 1024
+    count  = 1
+    port   = 8075
+  }
+  langgraph-api = {
+    cpu    = 1024
+    memory = 2048
+    count  = 1
+    port   = 8065
+  }
+  intent-api = {
+    cpu    = 512
+    memory = 1024
+    count  = 1
+    port   = 8085
+  }
+  sentiment-api = {
+    cpu    = 512
+    memory = 1024
+    count  = 1
+    port   = 8095
+  }
+  non-ai-api = {
+    cpu    = 512
+    memory = 1024
+    count  = 1
+    port   = 8003
+  }
+  rag-api = {
+    cpu    = 1024
+    memory = 2048
+    count  = 1
+    port   = 8080
+  }
+}

@@ -1,0 +1,10 @@
+# Terraform backend configuration
+backend-config.hcl
+*.backend.hcl
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+*.tfplan

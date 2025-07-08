@@ -2,7 +2,7 @@
 
 param(
     [Parameter(Mandatory=$false)]
-    [string]$Region = "ap-south-1"
+    [string]$Region = "us-east-1"
 )
 
 Write-Host "Importing existing AWS Secrets into Terraform state..." -ForegroundColor Green

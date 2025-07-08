@@ -42,16 +42,17 @@ $allResources = @{
 # . .\Get-ECSTaskDefinitions.ps1
 # . .\Get-ALBs.ps1
 # . .\Get-TargetGroups.ps1
- #. .\Get-VPCs.ps1
- #. .\Get-Subnets.ps1
- #. .\Get-SecurityGroups.ps1
- . .\Get-RouteTables.ps1
- #. .\Get-InternetGateways.ps1
+#. .\Get-VPCs.ps1
+#. .\Get-Subnets.ps1
+#. .\Get-SecurityGroups.ps1
+# . .\Get-RouteTables.ps1
+#. .\Get-InternetGateways.ps1
 # . .\Get-NATGateways.ps1
- #. .\Get-DHCPOptionSets.ps1
- #. .\Get-NetworkACLs.ps1
+#. .\Get-DHCPOptionSets.ps1
+#. .\Get-NetworkACLs.ps1
 # . .\Get-EC2Instances.ps1
 # . .\Get-RDSInstances.ps1
+ . .\Get-S3Buckets.ps1
 
 # Iterate over regions and collect resources
 foreach ($region in $Regions) {
@@ -75,6 +76,7 @@ foreach ($region in $Regions) {
         NetworkACLs = @()
         EC2Instances = @()
         RDSInstances = @()
+        S3Buckets = @()
     }
 
     # Call each resource discovery function, passing AccountId
@@ -86,14 +88,14 @@ foreach ($region in $Regions) {
     # Get-VPCs -Region $region -Resources $regionResources -AccountId $AccountId
     # Get-Subnets -Region $region -Resources $regionResources -AccountId $AccountId
     # Get-SecurityGroups -Region $region -Resources $regionResources -AccountId $AccountId
-     Get-RouteTables -Region $region -Resources $regionResources -AccountId $AccountId
+    # Get-RouteTables -Region $region -Resources $regionResources -AccountId $AccountId
     #Get-InternetGateways -Region $region -Resources $regionResources -AccountId $AccountId
     # Get-NATGateways -Region $region -Resources $regionResources -AccountId $AccountId
     #Get-DHCPOptionSets -Region $region -Resources $regionResources -AccountId $AccountId
     # Get-NetworkACLs -Region $region -Resources $regionResources -AccountId $AccountId
     # Get-EC2Instances -Region $region -Resources $regionResources -AccountId $AccountId
     # Get-RDSInstances -Region $region -Resources $regionResources -AccountId $AccountId
-
+     Get-S3Buckets -Region $region -Resources $regionResources -AccountId $AccountId
     # Store region resources in allResources
     $allResources.Regions[$region] = $regionResources
 }

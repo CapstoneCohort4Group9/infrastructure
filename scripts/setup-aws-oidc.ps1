@@ -12,7 +12,7 @@ param(
     [string]$GitHubRepo = "hopjetair",       # Change this to your repository name
     
     [Parameter(Mandatory=$false)]
-    [string]$Region = "ap-south-1"
+    [string]$Region = "us-east-1"
 )
 
 # Set AWS region
