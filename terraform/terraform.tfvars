@@ -43,8 +43,18 @@ ecr_repositories = [
 rds_instance_class    = "db.t4g.micro" #"db.t3.micro"
 rds_allocated_storage = 20
 rds_database_name     = "hopjetairline_db"
-rds_username          = "hopjetair"
-rds_password          = "SecurePass123!" # IMPORTANT: Change this!
+rds_username          = "" #"hopjetair"
+rds_password          = "" #"SecurePass123!" # IMPORTANT: Change this!
+
+
+# API credentials
+api_key    = "my-secret-key"
+api_secret = "Capst0neo3@2024"
+
+# Database credentials  
+db_user = "hopjetair"
+db_pass = "SecurePass123!"
+
 
 # Service configurations (optional - can use defaults)
 service_configs = {

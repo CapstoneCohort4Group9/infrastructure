@@ -18,23 +18,47 @@ variable "project_name" {
   default     = "hopjetair"
 }
 
+variable "api_key" {
+  description = "API key for the application"
+  type        = string
+  sensitive   = true
+}
+
+variable "api_secret" {
+  description = "API secret for the application"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_user" {
+  description = "Database username"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_pass" {
+  description = "Database password"
+  type        = string
+  sensitive   = true
+}
+
 # Existing VPC resources from your Bedrock setup in us-east-1
 variable "existing_vpc_id" {
   description = "Existing VPC ID"
   type        = string
-  default     = "vpc-063dd9b87946bb995" #"vpc-01233dc74a0ff1a87"
+  default     = "vpc-01233dc74a0ff1a87" #"vpc-063dd9b87946bb995"
 }
 
 variable "existing_public_subnet_ids" {
   description = "Existing public subnet IDs"
   type        = list(string)
   default = [
-    "subnet-0ccc1961403c1960b", #"subnet-09d35aa6c4fdefbc6", # us-east-1a
-    "subnet-0a1a77e97cd45bcae", #"subnet-04710615fd2a3cdb5", # us-east-1b
-    "subnet-0d44d04770610077e", #"subnet-0f8aa8bffb3f0d924", # us-east-1c
-    "subnet-0b3e062053c088aac", #"subnet-06ee156d94aac3129", # us-east-1d
-    "subnet-0a787e162b32d4fca", #"subnet-0213e0b3f4605d21f", # us-east-1e
-    "subnet-006273ca9b0ed3190"  #"subnet-0e2fb8a958f218227"  # us-east-1f
+    "subnet-09d35aa6c4fdefbc6", # us-east-1a   "subnet-0ccc1961403c1960b", #
+    "subnet-04710615fd2a3cdb5", # us-east-1b  "subnet-0a1a77e97cd45bcae", #
+    "subnet-0f8aa8bffb3f0d924", # us-east-1c  "subnet-0d44d04770610077e", #
+    "subnet-06ee156d94aac3129", # us-east-1d  "subnet-0b3e062053c088aac", #
+    "subnet-0213e0b3f4605d21f", # us-east-1e  "subnet-0a787e162b32d4fca", #
+    "subnet-0e2fb8a958f218227"  # us-east-1f  "subnet-006273ca9b0ed3190"  #
   ]
 }
 
@@ -47,7 +71,7 @@ variable "existing_private_subnet_ids" {
 variable "existing_internet_gateway_id" {
   description = "Existing Internet Gateway ID"
   type        = string
-  default     = "igw-0451d2256ce1787e8" #"igw-06e41237e5b852ad6"
+  default     = "igw-06e41237e5b852ad6" #"igw-0451d2256ce1787e8" #
 }
 
 # ECR repositories configuration

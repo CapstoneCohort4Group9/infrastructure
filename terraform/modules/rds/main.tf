@@ -58,6 +58,32 @@ resource "aws_db_instance" "main" {
 
   apply_immediately = false # Use maintenance window for changes
 
+  # Lifecycle block to ignore changes that might be made outside of Terraform
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to engine version (in case of minor version updates)
+      engine_version,
+      # Ignore parameter group changes (for pgvector extension setup)
+      parameter_group_name,
+      # Ignore password changes (if changed manually)
+      password,
+      # Ignore backup window changes (if adjusted for maintenance)
+      backup_window,
+      maintenance_window,
+      # Ignore storage changes (if manually increased)
+      allocated_storage,
+      # Ignore instance class changes (if manually scaled)
+      instance_class,
+      # Ignore any manual configuration changes
+      apply_immediately,
+      # Ignore CloudWatch logs configuration changes
+      enabled_cloudwatch_logs_exports,
+      # Ignore Performance Insights changes
+      performance_insights_enabled,
+      performance_insights_retention_period
+    ]
+  }
+
   tags = {
     Name        = var.identifier
     Environment = var.environment

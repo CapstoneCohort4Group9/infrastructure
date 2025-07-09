@@ -1,3 +1,5 @@
+## How to Use the Script:
+
 ```
 powershell
 ```
@@ -20,15 +22,14 @@ Make sure backend-config.hcl is in the same directory where you're running the c
 If you're using multiple config files (e.g., for different environments), you can pass multiple -backend-config flags:
 
 ```
-bash
+powershell
 ```
 
     terraform init \
     -backend-config="env/dev.hcl" \
     -backend-config="common.hcl"
 
-
-## How to Use the Updated Script:
+## Some secnarios:
 
 ```powershell
 # First time initialization
@@ -43,4 +44,3 @@ bash
 # If you're switching AWS accounts
 .\scripts\setup-terraform-init.ps1 -AccountId "123456789012" -Reconfigure
 ```
-

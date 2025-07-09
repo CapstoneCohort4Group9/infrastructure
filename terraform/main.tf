@@ -44,6 +44,12 @@ module "secrets" {
 
   environment = var.environment
   project     = var.project_name
+
+  # Override defaults with your values
+  api_key    = var.api_key
+  api_secret = var.api_secret
+  db_user    = var.db_user
+  db_pass    = var.db_pass
 }
 
 # Import existing VPC resources (from your Bedrock setup)
@@ -73,8 +79,8 @@ module "rds" {
 
   identifier        = "${var.project_name}-postgres"
   db_name           = var.rds_database_name
-  username          = var.rds_username
-  password          = var.rds_password
+  username          = module.secrets.db_credentials_parsed.db_user
+  password          = module.secrets.db_credentials_parsed.db_pass
   instance_class    = var.rds_instance_class
   allocated_storage = var.rds_allocated_storage
 
@@ -176,6 +182,8 @@ module "frontend_api" {
 
   environment = var.environment
   project     = var.project_name
+
+
 }
 
 # LangGraph API Service (Internal)
@@ -210,12 +218,7 @@ module "langgraph_api" {
     RAG_API_URL       = "http://${local.rag_api}.${var.project_name}.local:${var.service_configs[local.rag_api].port}"
     BEDROCK_MODEL_ID  = local.bedrock_model_id
     AWS_REGION        = var.aws_region
-  }
-
-  # Secrets from Secrets Manager
-  secrets = {
-    API_KEY    = "${module.secrets.api_secrets_arn}:api_key::"
-    API_SECRET = "${module.secrets.api_secrets_arn}:api_secret::"
+    API_KEY           = module.secrets.api_secrets_parsed.api_key
   }
 
   environment = var.environment
@@ -310,16 +313,21 @@ module "non_ai_api" {
   enable_service_discovery    = true
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
 
+  # Health check configuration
+  enable_health_check       = true
+  health_check_path         = "/health-deep"
+  health_check_interval     = 30
+  health_check_timeout      = 10
+  health_check_retries      = 3
+  health_check_start_period = 60
+
   environment_variables = {
     PORT    = tostring(var.service_configs[local.non_ai_api].port)
-    DB_HOST = module.rds.endpoint
+    DB_HOST = module.rds.address
     DB_PORT = tostring(module.rds.port)
     DB_NAME = var.rds_database_name
-  }
-
-  secrets = {
-    DB_USERNAME = "${module.secrets.db_credentials_arn}:username::"
-    DB_PASSWORD = "${module.secrets.db_credentials_arn}:password::"
+    DB_USER = module.secrets.db_credentials_parsed.db_user
+    DB_PASS = module.secrets.db_credentials_parsed.db_pass
   }
 
   environment = var.environment
@@ -352,16 +360,13 @@ module "rag_api" {
 
   environment_variables = {
     PORT             = tostring(var.service_configs[local.rag_api].port)
-    DB_HOST          = module.rds.endpoint
+    DB_HOST          = module.rds.address
     DB_PORT          = tostring(module.rds.port)
     DB_NAME          = var.rds_database_name
     BEDROCK_MODEL_ID = local.bedrock_model_id
     AWS_REGION       = var.aws_region
-  }
-
-  secrets = {
-    DB_USERNAME = "${module.secrets.db_credentials_arn}:username::"
-    DB_PASSWORD = "${module.secrets.db_credentials_arn}:password::"
+    DB_USER          = module.secrets.db_credentials_parsed.db_user
+    DB_PASS          = module.secrets.db_credentials_parsed.db_pass
   }
 
   environment = var.environment

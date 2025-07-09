@@ -118,6 +118,26 @@ resource "aws_iam_role_policy" "ecs_task_bedrock" {
   })
 }
 
+
+# Task role policy for Secrets Manager access
+resource "aws_iam_role_policy" "ecs_task_secrets" {
+  name = "${var.cluster_name}-task-secrets"
+  role = aws_iam_role.ecs_task.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = "arn:aws:secretsmanager:*:*:secret:*"
+      }
+    ]
+  })
+}
+
 # CloudWatch Log Group for ECS
 resource "aws_cloudwatch_log_group" "ecs" {
   name              = "/ecs/${var.cluster_name}"

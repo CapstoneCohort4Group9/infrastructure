@@ -109,8 +109,8 @@ function Update-SecretValue {
     try {
         Write-Host "Updating ${SecretId}..." -ForegroundColor Cyan
         $updateResult = aws secretsmanager put-secret-value `
-            --secret-id $SecretId `
-            --secret-string $SecretValue `
+            --secret-id "${SecretId}" `
+            --secret-string "${SecretValue}" `
             --region $Region 2>&1
         
         if ($LASTEXITCODE -eq 0) {
@@ -166,8 +166,8 @@ if ($hasApiSecrets) {
     }
     
     $apiSecretValue = @{
-        api_key = $ApiKey
-        api_secret = $ApiSecret
+        api_key = "${ApiKey}"
+        api_secret = "${ApiSecret}"
     } | ConvertTo-Json -Compress
     
     if (Update-SecretValue -SecretId "api_secrets" -SecretValue $apiSecretValue -Description "API credentials") {
@@ -197,8 +197,8 @@ if ($hasDbSecrets) {
     }
     
     $dbSecretValue = @{
-        username = $DbUsername
-        password = $DbPassword
+        username = "${DbUsername}"
+        password = "${DbPassword}"
     } | ConvertTo-Json -Compress
     
     if (Update-SecretValue -SecretId "db_credentials" -SecretValue $dbSecretValue -Description "Database credentials") {

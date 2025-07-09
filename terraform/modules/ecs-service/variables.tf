@@ -130,3 +130,40 @@ variable "project" {
   description = "Project name"
   type        = string
 }
+
+# Health Check Variables
+variable "enable_health_check" {
+  description = "Enable health check for the container"
+  type        = bool
+  default     = false
+}
+
+variable "health_check_path" {
+  description = "Path for health check endpoint"
+  type        = string
+  default     = "/"
+}
+
+variable "health_check_interval" {
+  description = "Interval between health checks (seconds)"
+  type        = number
+  default     = 30
+}
+
+variable "health_check_timeout" {
+  description = "Timeout for health check (seconds)"
+  type        = number
+  default     = 5
+}
+
+variable "health_check_retries" {
+  description = "Number of retries for health check"
+  type        = number
+  default     = 3
+}
+
+variable "health_check_start_period" {
+  description = "Grace period before health checks start (seconds)"
+  type        = number
+  default     = 60
+}

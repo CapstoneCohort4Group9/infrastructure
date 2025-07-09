@@ -20,34 +20,47 @@ resource "aws_ecs_task_definition" "service" {
   cpu                      = var.container_cpu
   memory                   = var.container_memory
   execution_role_arn       = var.execution_role_arn
-  task_role_arn           = var.task_role_arn
+  task_role_arn            = var.task_role_arn
 
   container_definitions = jsonencode([
     {
       name  = var.container_name
       image = var.container_image
-      
+
       portMappings = [
         {
           containerPort = var.container_port
           protocol      = "tcp"
         }
       ]
-      
+
       environment = [
         for key, value in var.environment_variables : {
           name  = key
           value = value
         }
       ]
-      
+
       secrets = [
         for key, value in var.secrets : {
           name      = key
           valueFrom = value
         }
       ]
-      
+      #http://non-ai-api.${aws_service_discovery_private_dns_namespace.main.name}
+      #${var.service_name}.${aws_service_discovery_private_dns_namespace.main.name}
+      # Health check configuration
+      healthCheck = var.enable_health_check ? {
+        command = [
+          "CMD-SHELL",
+          "curl -f http://${var.enable_service_discovery ? "${aws_service_discovery_service.service[0].name}.${var.project}.local" : "localhost"}:${var.container_port}${var.health_check_path} || exit 1"
+        ]
+        interval    = var.health_check_interval
+        timeout     = var.health_check_timeout
+        retries     = var.health_check_retries
+        startPeriod = var.health_check_start_period
+      } : null
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -56,7 +69,7 @@ resource "aws_ecs_task_definition" "service" {
           "awslogs-stream-prefix" = "ecs"
         }
       }
-      
+
       essential = true
     }
   ])
@@ -82,7 +95,7 @@ resource "aws_ecs_service" "service" {
   network_configuration {
     subnets          = var.subnet_ids
     security_groups  = var.security_group_ids
-    assign_public_ip = true  # Required for Fargate in public subnets
+    assign_public_ip = true # Required for Fargate in public subnets
   }
 
   # Load balancer configuration (optional)
@@ -105,6 +118,14 @@ resource "aws_ecs_service" "service" {
 
   depends_on = [var.target_group_arn]
 
+  # Lifecycle block to ignore changes that might be made outside of Terraform
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to desired_count 
+      desired_count
+    ]
+  }
+
   tags = {
     Name        = var.service_name
     Environment = var.environment
@@ -115,17 +136,17 @@ resource "aws_ecs_service" "service" {
 # Service Discovery Service (optional)
 resource "aws_service_discovery_service" "service" {
   count = var.enable_service_discovery ? 1 : 0
-  
+
   name = var.service_name
 
   dns_config {
     namespace_id = var.service_discovery_namespace
-    
+
     dns_records {
       ttl  = 10
       type = "A"
     }
-    
+
     routing_policy = "MULTIVALUE"
   }
 

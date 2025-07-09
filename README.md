@@ -43,48 +43,12 @@ aws sts get-caller-identity
 # }
 ```
 
-### 1. Configure AWS OIDC Provider (One-time setup)
+### 1. Follow the instructions specified in the link below
 
-Run the setup script to create OIDC provider and IAM role:
-
-```powershell
-cd scripts
-.\setup-aws-oidc.ps1
-```
-
-### 2. Create Backend Resources
-
-Create S3 bucket and DynamoDB table for Terraform state:
+Follow the instruction given in
 
 ```powershell
-cd scripts
-.\setup-terraform-backend.ps1
-```
-
-### 3. Configure GitHub Secrets
-
-Add these repository variables in GitHub:
-
-- `AWS_ACCOUNT_ID`: Your AWS account ID
-- `AWS_REGION`: Your preferred AWS region (e.g., us-east-1)
-
-## Usage
-
-### Adding New ECR Repository
-
-1. Edit `terraform\terraform.tfvars`
-2. Add new repository to the `ecr_repositories` list
-3. Create a pull request
-4. GitHub Actions will run `terraform plan`
-5. Merge PR to apply changes
-
-### Manual Terraform Commands
-
-```powershell
-cd terraform
-terraform init
-terraform plan
-terraform apply
+scripts\check-setup.md
 ```
 
 ## Security

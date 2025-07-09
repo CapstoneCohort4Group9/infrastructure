@@ -15,23 +15,32 @@ variable "enable_rotation" {
   default     = false
 }
 
-# terraform/modules/secrets/outputs.tf
-output "api_secrets_arn" {
-  description = "ARN of the API secrets"
-  value       = aws_secretsmanager_secret.api_secrets.arn
+variable "api_key" {
+  description = "API key for the application"
+  type        = string
+  sensitive   = true
+  default     = "my-secret-key"
 }
 
-output "api_secrets_name" {
-  description = "Name of the API secrets"
-  value       = aws_secretsmanager_secret.api_secrets.name
+variable "api_secret" {
+  description = "API secret for the application"
+  type        = string
+  sensitive   = true
+  default     = "Capst0neo3@2024"
 }
 
-output "db_credentials_arn" {
-  description = "ARN of the DB credentials secret"
-  value       = aws_secretsmanager_secret.db_credentials.arn
+variable "db_user" {
+  description = "Database username"
+  type        = string
+  sensitive   = true
+  default     = "hopjetair"
 }
 
-output "db_credentials_name" {
-  description = "Name of the DB credentials secret"
-  value       = aws_secretsmanager_secret.db_credentials.name
+variable "db_pass" {
+  description = "Database password"
+  type        = string
+  sensitive   = true
+  default     = "SecurePass123!"
 }
+
+
