@@ -141,14 +141,14 @@ variable "service_configs" {
       port   = 8065
     }
     intent-api = {
-      cpu    = 512
-      memory = 1024
+      cpu    = 1024
+      memory = 3072
       count  = 1
       port   = 8085
     }
     sentiment-api = {
-      cpu    = 512
-      memory = 1024
+      cpu    = 1024
+      memory = 3072
       count  = 1
       port   = 8095
     }

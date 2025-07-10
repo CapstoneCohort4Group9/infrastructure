@@ -48,40 +48,40 @@ rds_password          = "SecurePass123!" # IMPORTANT: Change this!
 
 # Service configurations (optional - can use defaults)
 service_configs = {
-  frontend-api = {
-    cpu    = 512
-    memory = 1024
-    count  = 1
-    port   = 8075
-  }
-  langgraph-api = {
-    cpu    = 1024
-    memory = 2048
-    count  = 1
-    port   = 8065
-  }
-  intent-api = {
-    cpu    = 512
-    memory = 1024
-    count  = 1
-    port   = 8085
-  }
-  sentiment-api = {
-    cpu    = 512
-    memory = 1024
-    count  = 1
-    port   = 8095
-  }
-  non-ai-api = {
-    cpu    = 512
-    memory = 1024
-    count  = 1
-    port   = 8003
-  }
-  rag-api = {
-    cpu    = 1024
-    memory = 2048
-    count  = 1
-    port   = 8080
-  }
+    frontend-api = {
+      cpu    = 512
+      memory = 1024
+      count  = 1
+      port   = 8075
+    }
+    langgraph-api = {
+      cpu    = 1024
+      memory = 2048
+      count  = 1
+      port   = 8065
+    }
+    intent-api = {
+      cpu    = 1024
+      memory = 3072
+      count  = 1
+      port   = 8085
+    }
+    sentiment-api = {
+      cpu    = 1024
+      memory = 3072
+      count  = 1
+      port   = 8095
+    }
+    non-ai-api = {
+      cpu    = 512
+      memory = 1024
+      count  = 1
+      port   = 8003
+    }
+    rag-api = {
+      cpu    = 1024
+      memory = 2048
+      count  = 1
+      port   = 8080
+    }
 }

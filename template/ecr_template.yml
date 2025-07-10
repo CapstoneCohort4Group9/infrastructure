@@ -66,8 +66,8 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker run -d -p 8085:8085 \
-            --name test-container $ECR_REGISTRY/$ECR_REPOSITORY
+          docker run -d -p 8095:8095 \
+            --name test-container $ECR_REGISTRY/$ECR_REPOSITORY  
           
             
           # Wait for container to start and model to load
