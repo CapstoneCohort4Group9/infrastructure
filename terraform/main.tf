@@ -174,6 +174,14 @@ module "frontend_api" {
   enable_service_discovery    = true
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
 
+  # Health check configuration
+  enable_health_check       = true
+  health_check_path         = "/"
+  health_check_interval     = 30
+  health_check_timeout      = 10
+  health_check_retries      = 3
+  health_check_start_period = 60
+
   environment_variables = {
     NODE_ENV          = var.environment
     LANGGRAPH_API_URL = "http://${local.langgraph_api}.${var.project_name}.local:${var.service_configs[local.langgraph_api].port}"
@@ -209,6 +217,14 @@ module "langgraph_api" {
   enable_load_balancer        = false
   enable_service_discovery    = true
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
+
+  # Health check configuration
+  enable_health_check       = true
+  health_check_path         = "/health"
+  health_check_interval     = 30
+  health_check_timeout      = 10
+  health_check_retries      = 3
+  health_check_start_period = 60
 
   environment_variables = {
     PORT              = tostring(var.service_configs[local.langgraph_api].port)
@@ -249,6 +265,14 @@ module "intent_api" {
   enable_service_discovery    = true
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
 
+  # Health check configuration
+  enable_health_check       = true
+  health_check_path         = "/health"
+  health_check_interval     = 30
+  health_check_timeout      = 10
+  health_check_retries      = 3
+  health_check_start_period = 60
+
   environment_variables = {
     PORT = tostring(var.service_configs[local.intent_api].port)
   }
@@ -280,6 +304,14 @@ module "sentiment_api" {
   enable_load_balancer        = false
   enable_service_discovery    = true
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
+
+  # Health check configuration
+  enable_health_check       = true
+  health_check_path         = "/health"
+  health_check_interval     = 30
+  health_check_timeout      = 10
+  health_check_retries      = 3
+  health_check_start_period = 60
 
   environment_variables = {
     PORT = tostring(var.service_configs[local.sentiment_api].port)
@@ -357,6 +389,14 @@ module "rag_api" {
   enable_load_balancer        = false
   enable_service_discovery    = true
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
+
+  # Health check configuration
+  enable_health_check       = true
+  health_check_path         = "/health"
+  health_check_interval     = 30
+  health_check_timeout      = 10
+  health_check_retries      = 3
+  health_check_start_period = 60
 
   environment_variables = {
     PORT             = tostring(var.service_configs[local.rag_api].port)
