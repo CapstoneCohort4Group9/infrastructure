@@ -66,11 +66,12 @@ module "networking" {
 module "security" {
   source = "./modules/security"
 
-  vpc_id                = module.networking.vpc_id
-  vpc_cidr              = module.networking.vpc_cidr_block
-  alb_security_group_id = module.alb.security_group_id
-  environment           = var.environment
-  project               = var.project_name
+  vpc_id                   = module.networking.vpc_id
+  vpc_cidr                 = module.networking.vpc_cidr_block
+  alb_security_group_id    = module.alb.security_group_id
+  expose_internal_services = var.expose_internal_services # ADD THIS LINE
+  environment              = var.environment
+  project                  = var.project_name
 }
 
 # RDS PostgreSQL
@@ -118,6 +119,9 @@ module "alb" {
   subnet_ids         = module.networking.public_subnet_ids
   security_group_ids = [module.security.alb_security_group_id]
 
+  # NEW: Pass conditional variable
+  expose_internal_services = var.expose_internal_services
+
   environment = var.environment
   project     = var.project_name
 }
@@ -144,7 +148,7 @@ locals {
   sentiment_api    = "sentiment-api"
   non_ai_api       = "non-ai-api"
   rag_api          = "rag-api"
-  bedrock_model_id = "hopjetair-chat-model"
+  bedrock_model_id = "arn:aws:bedrock:us-east-1:109038807292:imported-model/dyvo6hnju5a1"
 }
 
 module "frontend_api" {
@@ -214,7 +218,10 @@ module "langgraph_api" {
   subnet_ids         = module.networking.public_subnet_ids
   security_group_ids = [module.security.ecs_service_security_group_id]
 
-  enable_load_balancer        = false
+  # MODIFIED: Conditionally enable load balancer
+  enable_load_balancer = var.expose_internal_services
+  target_group_arn     = var.expose_internal_services ? module.alb.langgraph_target_group_arn : ""
+
   enable_service_discovery    = true
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
 
@@ -261,7 +268,10 @@ module "intent_api" {
   subnet_ids         = module.networking.public_subnet_ids
   security_group_ids = [module.security.ecs_service_security_group_id]
 
-  enable_load_balancer        = false
+  # MODIFIED: Conditionally enable load balancer
+  enable_load_balancer = var.expose_internal_services
+  target_group_arn     = var.expose_internal_services ? module.alb.intent_target_group_arn : ""
+
   enable_service_discovery    = true
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
 
@@ -301,7 +311,10 @@ module "sentiment_api" {
   subnet_ids         = module.networking.public_subnet_ids
   security_group_ids = [module.security.ecs_service_security_group_id]
 
-  enable_load_balancer        = false
+  # MODIFIED: Conditionally enable load balancer
+  enable_load_balancer = var.expose_internal_services
+  target_group_arn     = var.expose_internal_services ? module.alb.sentiment_target_group_arn : ""
+
   enable_service_discovery    = true
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
 
@@ -341,7 +354,10 @@ module "non_ai_api" {
   subnet_ids         = module.networking.public_subnet_ids
   security_group_ids = [module.security.ecs_service_security_group_id]
 
-  enable_load_balancer        = false
+  # MODIFIED: Conditionally enable load balancer
+  enable_load_balancer = var.expose_internal_services
+  target_group_arn     = var.expose_internal_services ? module.alb.non_ai_target_group_arn : ""
+
   enable_service_discovery    = true
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
 
@@ -386,7 +402,10 @@ module "rag_api" {
   subnet_ids         = module.networking.public_subnet_ids
   security_group_ids = [module.security.ecs_service_security_group_id]
 
-  enable_load_balancer        = false
+  # MODIFIED: Conditionally enable load balancer
+  enable_load_balancer = var.expose_internal_services
+  target_group_arn     = var.expose_internal_services ? module.alb.rag_target_group_arn : ""
+
   enable_service_discovery    = true
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
 
@@ -394,19 +413,26 @@ module "rag_api" {
   enable_health_check       = true
   health_check_path         = "/health"
   health_check_interval     = 30
-  health_check_timeout      = 10
+  health_check_timeout      = 15
   health_check_retries      = 3
-  health_check_start_period = 60
+  health_check_start_period = 300
 
   environment_variables = {
-    PORT             = tostring(var.service_configs[local.rag_api].port)
-    DB_HOST          = module.rds.address
-    DB_PORT          = tostring(module.rds.port)
-    DB_NAME          = var.rds_database_name
-    BEDROCK_MODEL_ID = local.bedrock_model_id
-    AWS_REGION       = var.aws_region
-    DB_USER          = module.secrets.db_credentials_parsed.db_user
-    DB_PASS          = module.secrets.db_credentials_parsed.db_pass
+    PORT                 = tostring(var.service_configs[local.rag_api].port)
+    DB_HOST              = module.rds.address
+    DB_PORT              = tostring(module.rds.port)
+    DB_NAME              = var.rds_database_name
+    BEDROCK_MODEL_ID     = local.bedrock_model_id
+    BEDROCK_REGION       = var.aws_region
+    AWS_REGION           = var.aws_region
+    DB_USER              = module.secrets.db_credentials_parsed.db_user
+    DB_PASS              = module.secrets.db_credentials_parsed.db_pass
+    DB_SECRET_NAME       = module.secrets.db_credentials_name
+    COLLECTION_NAME      = "airline_docs_pg"
+    TOP_K_RESULTS        = "5"
+    SIMILARITY_THRESHOLD = "0.5"
+    MAX_TOKENS           = "384"
+    TEMPERATURE          = "0.5"
   }
 
   environment = var.environment

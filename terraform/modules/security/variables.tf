@@ -30,3 +30,9 @@ variable "service_ports" {
   type        = list(number)
   default     = [8003, 8065, 8075, 8080, 8085, 8095]
 }
+
+variable "expose_internal_services" {
+  description = "Temporarily expose internal services via ALB"
+  type        = bool
+  default     = false
+}

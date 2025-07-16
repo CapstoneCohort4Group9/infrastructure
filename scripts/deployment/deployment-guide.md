@@ -10,6 +10,7 @@
    - Secrets in AWS Secrets Manager (api_secrets, db_credentials)
    - Default VPC in us-east-1 with subnets
    - Bedrock model: hopjetair-chat-model
+   - Bedrock model Id: arn:aws:bedrock:us-east-1:109038807292:imported-model/dyvo6hnju5a1
 
 ## Step-by-Step Deployment
 
@@ -48,6 +49,7 @@ terraform plan
 ```
 
 This will create:
+
 - Security groups for ALB, ECS services, and RDS
 - RDS PostgreSQL instance with pgvector
 - ECS cluster
@@ -123,7 +125,9 @@ After deployment:
 ## Monitoring
 
 ### CloudWatch Logs
+
 Each service has its own log group:
+
 - `/ecs/frontend-api`
 - `/ecs/langgraph-api`
 - `/ecs/intent-api`
@@ -132,6 +136,7 @@ Each service has its own log group:
 - `/ecs/rag-api`
 
 ### ECS Console
+
 Monitor services at: https://console.aws.amazon.com/ecs/home?region=us-east-1
 
 ## Troubleshooting
@@ -139,6 +144,7 @@ Monitor services at: https://console.aws.amazon.com/ecs/home?region=us-east-1
 ### Service Won't Start
 
 1. Check CloudWatch logs:
+
 ```bash
 aws logs tail /ecs/<service-name> --follow
 ```
@@ -156,6 +162,7 @@ aws logs tail /ecs/<service-name> --follow
 ### Service Discovery Issues
 
 1. Verify services are registered:
+
 ```bash
 aws servicediscovery list-services --filters Name=NAMESPACE_ID,Values=<namespace-id>
 ```
@@ -171,12 +178,14 @@ aws servicediscovery list-services --filters Name=NAMESPACE_ID,Values=<namespace
 ## Cost Optimization
 
 ### Current Setup (Estimated Monthly Cost)
+
 - **RDS**: ~$15 (t3.micro)
 - **ECS Fargate**: ~$50-100 (depending on usage)
 - **ALB**: ~$20
 - **Total**: ~$85-135/month
 
 ### Cost Saving Tips
+
 1. Use Fargate Spot for non-critical services
 2. Schedule services to stop during off-hours
 3. Use smaller task sizes for development
@@ -185,6 +194,7 @@ aws servicediscovery list-services --filters Name=NAMESPACE_ID,Values=<namespace
 ## Updating Services
 
 ### Update Service Image
+
 ```bash
 # Build and push new image
 docker build -t <service-name> .
@@ -196,6 +206,7 @@ aws ecs update-service --cluster hopjetair-cluster --service <service-name> --fo
 ```
 
 ### Update Infrastructure
+
 ```bash
 # Make changes to .tf files
 terraform plan
@@ -203,6 +214,7 @@ terraform apply
 ```
 
 ### Scale Services
+
 ```bash
 # Update desired count
 aws ecs update-service --cluster hopjetair-cluster --service <service-name> --desired-count 3
@@ -211,11 +223,13 @@ aws ecs update-service --cluster hopjetair-cluster --service <service-name> --de
 ## Cleanup
 
 To destroy all resources:
+
 ```bash
 terraform destroy
 ```
 
 **WARNING**: This will delete:
+
 - RDS instance (and all data)
 - ECS services and cluster
 - ALB

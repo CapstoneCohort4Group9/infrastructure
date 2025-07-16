@@ -90,8 +90,11 @@ service_configs = {
   }
   rag-api = {
     cpu    = 1024
-    memory = 2048
+    memory = 3072
     count  = 1
     port   = 8080
   }
 }
+
+#Conditional ALB Target Groups
+expose_internal_services = true

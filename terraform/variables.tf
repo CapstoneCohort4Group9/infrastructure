@@ -160,9 +160,16 @@ variable "service_configs" {
     }
     rag-api = {
       cpu    = 1024
-      memory = 2048
+      memory = 3072
       count  = 1
       port   = 8080
     }
   }
+}
+
+#Conditional ALB Target Groups
+variable "expose_internal_services" {
+  description = "Temporarily expose internal services via ALB"
+  type        = bool
+  default     = false
 }

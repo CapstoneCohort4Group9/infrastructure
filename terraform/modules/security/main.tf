@@ -37,6 +37,19 @@ resource "aws_security_group" "alb" {
   }
 }
 
+# Additional ingress rules for internal service ports (conditional)
+resource "aws_security_group_rule" "alb_internal_ports" {
+  for_each = var.expose_internal_services ? toset(["8003", "8065", "8080", "8085", "8095"]) : []
+  
+  type              = "ingress"
+  from_port         = each.value
+  to_port           = each.value
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.alb.id
+  description       = "Internal service port ${each.value}"
+}
+
 # ECS Service Security Group
 resource "aws_security_group" "ecs_service" {
   name        = "${var.project}-ecs-service-sg"

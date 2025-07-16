@@ -28,3 +28,9 @@ variable "project" {
   description = "Project name"
   type        = string
 }
+
+variable "expose_internal_services" {
+  description = "Temporarily expose internal services via ALB"
+  type        = bool
+  default     = false
+}
