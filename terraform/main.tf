@@ -370,12 +370,16 @@ module "non_ai_api" {
   health_check_start_period = 60
 
   environment_variables = {
-    PORT    = tostring(var.service_configs[local.non_ai_api].port)
-    DB_HOST = module.rds.address
-    DB_PORT = tostring(module.rds.port)
-    DB_NAME = var.rds_database_name
-    DB_USER = module.secrets.db_credentials_parsed.db_user
-    DB_PASS = module.secrets.db_credentials_parsed.db_pass
+    PORT               = tostring(var.service_configs[local.non_ai_api].port)
+    DB_HOST            = module.rds.address
+    DB_PORT            = tostring(module.rds.port)
+    DB_NAME            = var.rds_database_name
+    DB_USER            = module.secrets.db_credentials_parsed.db_user
+    DB_PASS            = module.secrets.db_credentials_parsed.db_pass
+    DB_MIN_CONNECTIONS = "5"
+    DB_MAX_CONNECTIONS = "20"
+    DB_SECRET_NAME     = module.secrets.db_credentials_name
+    AWS_REGION         = var.aws_region
   }
 
   environment = var.environment
