@@ -149,7 +149,7 @@ locals {
   non_ai_api       = "non-ai-api"
   rag_api          = "rag-api"
   bedrock_model_id = "arn:aws:bedrock:us-east-1:109038807292:imported-model/dyvo6hnju5a1"
-  redis_host       = "rediss://clustercfg.rediscachedb.rmqfjt.use1.cache.amazonaws.com"
+  redis_host       = "redis://172.31.80.125"
 
 }
 
@@ -242,7 +242,6 @@ module "langgraph_api" {
     BEDROCK_REGION    = var.aws_region
     AWS_REGION        = var.aws_region
     API_KEY           = module.secrets.api_secrets_parsed.api_key
-    ASSUME_ROLE_ARN   = "arn:aws:iam::109038807292:role/hopjetair-cluster-task-role"
   }
 
   environment = var.environment
