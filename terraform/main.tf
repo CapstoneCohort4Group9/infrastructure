@@ -149,6 +149,8 @@ locals {
   non_ai_api       = "non-ai-api"
   rag_api          = "rag-api"
   bedrock_model_id = "arn:aws:bedrock:us-east-1:109038807292:imported-model/dyvo6hnju5a1"
+  redis_host       = "rediss://clustercfg.rediscachedb.rmqfjt.use1.cache.amazonaws.com"
+
 }
 
 module "frontend_api" {
@@ -179,17 +181,12 @@ module "frontend_api" {
   service_discovery_namespace = aws_service_discovery_private_dns_namespace.main.id
 
   # Health check configuration
-  enable_health_check       = true
-  health_check_path         = "/"
-  health_check_interval     = 30
-  health_check_timeout      = 10
-  health_check_retries      = 3
-  health_check_start_period = 60
+  enable_health_check = false
 
   environment_variables = {
-    NODE_ENV          = var.environment
-    LANGGRAPH_API_URL = "http://${local.langgraph_api}.${var.project_name}.local:${var.service_configs[local.langgraph_api].port}"
-    PORT              = tostring(var.service_configs[local.frontend_api].port)
+    NODE_ENV                    = var.environment
+    REACT_APP_LANGGRAPH_API_URL = "http://${local.langgraph_api}.${var.project_name}.local:${var.service_configs[local.langgraph_api].port}"
+    PORT                        = tostring(var.service_configs[local.frontend_api].port)
   }
 
   environment = var.environment
@@ -235,13 +232,17 @@ module "langgraph_api" {
 
   environment_variables = {
     PORT              = tostring(var.service_configs[local.langgraph_api].port)
-    INTENT_API_URL    = "http://${local.intent_api}.${var.project_name}.local:${var.service_configs[local.intent_api].port}"
-    SENTIMENT_API_URL = "http://${local.sentiment_api}.${var.project_name}.local:${var.service_configs[local.sentiment_api].port}"
+    INTENT_API_URL    = "http://${local.intent_api}.${var.project_name}.local:${var.service_configs[local.intent_api].port}/classify_intent"
+    SENTIMENT_API_URL = "http://${local.sentiment_api}.${var.project_name}.local:${var.service_configs[local.sentiment_api].port}/analyze_sentiment"
     NON_AI_API_URL    = "http://${local.non_ai_api}.${var.project_name}.local:${var.service_configs[local.non_ai_api].port}"
-    RAG_API_URL       = "http://${local.rag_api}.${var.project_name}.local:${var.service_configs[local.rag_api].port}"
+    RAG_API_URL       = "http://${local.rag_api}.${var.project_name}.local:${var.service_configs[local.rag_api].port}/query"
+    REDIS_HOST        = "${local.redis_host}"
+    REDIS_PORT        = 6379
     BEDROCK_MODEL_ID  = local.bedrock_model_id
+    BEDROCK_REGION    = var.aws_region
     AWS_REGION        = var.aws_region
     API_KEY           = module.secrets.api_secrets_parsed.api_key
+    ASSUME_ROLE_ARN   = "arn:aws:iam::109038807292:role/hopjetair-cluster-task-role"
   }
 
   environment = var.environment
@@ -426,8 +427,6 @@ module "rag_api" {
     DB_HOST              = module.rds.address
     DB_PORT              = tostring(module.rds.port)
     DB_NAME              = var.rds_database_name
-    BEDROCK_MODEL_ID     = local.bedrock_model_id
-    BEDROCK_REGION       = var.aws_region
     AWS_REGION           = var.aws_region
     DB_USER              = module.secrets.db_credentials_parsed.db_user
     DB_PASS              = module.secrets.db_credentials_parsed.db_pass
@@ -437,6 +436,9 @@ module "rag_api" {
     SIMILARITY_THRESHOLD = "0.5"
     MAX_TOKENS           = "384"
     TEMPERATURE          = "0.5"
+    RETURN_COUNT         = "3"
+
+
   }
 
   environment = var.environment
